@@ -1,0 +1,238 @@
+.container {
+  direction: rtl;
+  background: #ffffff;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  font-family: sans-serif;
+  color: #2f4858;
+}
+
+.title {
+  text-align: right;
+  margin-bottom: 12px;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.search {
+  flex: 1 1 420px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e6edf0;
+  box-shadow: 0 2px 6px rgba(47, 72, 88, 0.04);
+}
+
+.filterRow {
+  display: flex;
+  gap: 8px;
+}
+
+.select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e6edf0;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  min-width: 850px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table th,
+.table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f6;
+  text-align: center;
+  color: #3b5963;
+}
+
+.table th {
+  background: #f7fafb;
+  font-weight: 700;
+}
+
+.row:hover td {
+  background: #fbfcfd;
+}
+
+.center {
+  text-align: center;
+  padding: 20px 0;
+  color: #93a4ab;
+}
+
+/* ID prefix */
+.idCell {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+.idPrefix {
+  background: #eef2f3;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.idFull {
+  color: #556b73;
+}
+
+/* Gift counts horizontal small boxes */
+.giftCountsHorizontal {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+.giftBox {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #111;
+}
+.giftGold {
+  background: linear-gradient(135deg, #f7d06b, #d4af37);
+}
+.giftSilver {
+  background: linear-gradient(135deg, #e6eef4, #c0c7cd);
+}
+.giftBronze {
+  background: linear-gradient(135deg, #d9a06b, #b36b2f);
+}
+.giftCell {
+  text-align: center;
+}
+
+/* Status badges */
+.statusConfirmedBadge {
+  background: rgba(5, 150, 105, 0.08);
+  color: #059669;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+.statusUnconfirmedBadge {
+  background: rgba(185, 28, 28, 0.06);
+  color: #b91c1c;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+/* highlight */
+.highlight {
+  background: #fff59d;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+/* Actions: horizontal and aligned to right */
+.actionsCell {
+  vertical-align: bottom;
+  text-align: right;
+}
+.actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.btnEdit,
+.btnDelete,
+.btnConfirm {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.12s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+.btnEdit {
+  background: #3b5963;
+  color: #fff;
+}
+.btnDelete {
+  background: #e02424;
+  color: #fff;
+}
+.btnConfirm {
+  background: #16a34a;
+  color: #fff;
+}
+.btnEdit:hover,
+.btnDelete:hover,
+.btnConfirm:hover {
+  transform: translateY(-2px);
+}
+
+/* Pagination */
+.pager {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  gap: 12px;
+}
+.pageInfo {
+  color: #56707a;
+}
+.pageButtons {
+  display: flex;
+  gap: 8px;
+}
+.pageBtn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e6edf0;
+  background: white;
+}
+.pageBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search {
+    width: 100%;
+  }
+  .table {
+    min-width: 700px;
+  }
+}

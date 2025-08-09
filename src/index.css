@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #fff;
+  font-weight: 400;
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "IRANSans", sans-serif;
+  min-height: 100vh;
+}
+
+/* Media queries for responsive font sizing */
+@media (max-width: 399px) {
+  html {
+    font-size: 50%; /* 8px base */
+  }
+}
+
+@media (min-width: 400px) and (max-width: 799px) {
+  html {
+    font-size: 56.25%; /* 9px base */
+  }
+}
+
+@media (min-width: 800px) {
+  html {
+    font-size: 62.5%; /* 10px base */
+  }
+}

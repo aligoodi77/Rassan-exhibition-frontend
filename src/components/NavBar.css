@@ -1,0 +1,154 @@
+.navbar-top {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  font-family: "Vazir", sans-serif;
+  direction: rtl;
+  transition: all 0.3s ease;
+}
+
+/* Device heights */
+.navbar-top.mobile {
+  height: 60px;
+}
+
+.navbar-top.tablet {
+  height: 70px;
+}
+
+.navbar-top.laptop {
+  height: 80px;
+}
+
+.navbar-left,
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.user-info:hover {
+  background-color: #f5f5f5;
+}
+
+.user-icon {
+  font-size: 18px;
+  color: #333;
+}
+
+.dropdown-icon {
+  font-size: 16px;
+  color: #666;
+  margin-right: 5px;
+}
+
+.navbar-user {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  padding: 10px 0;
+  z-index: 1000;
+  min-width: 200px;
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.user-info:hover + .dropdown-menu,
+.dropdown-menu:hover {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  text-align: right;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #333;
+  font-family: inherit;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+  color: #2c3e50;
+}
+
+.dropdown-item.logout {
+  color: #e74c3c;
+  border-top: 1px solid #eee;
+  margin-top: 5px;
+  padding-top: 15px;
+}
+
+.dropdown-item.logout:hover {
+  background-color: #fef0f0;
+}
+
+/* Responsive */
+@media (max-width: 399px) {
+  .navbar-top {
+    padding: 0 10px;
+  }
+
+  .navbar-user strong {
+    display: none;
+  }
+
+  .dropdown-menu {
+    left: auto;
+    right: 0;
+  }
+
+  .user-info {
+    padding: 6px 8px;
+  }
+}
+
+@media (min-width: 400px) and (max-width: 799px) {
+  .navbar-user {
+    font-size: 14px;
+  }
+
+  .dropdown-item {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
+
+@media (min-width: 800px) {
+  .dropdown-menu {
+    min-width: 220px;
+  }
+
+  .dropdown-item {
+    font-size: 16px;
+    padding: 12px 20px;
+  }
+}
