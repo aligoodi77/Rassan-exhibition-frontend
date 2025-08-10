@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./Login.module.css";
-import { FaPhone } from "react-icons/fa";
-import { FaLock } from "react-icons/fa";
+import { FaPhone, FaLock } from "react-icons/fa";
 import Logo from "../components/Logo";
+import styles from "./Login.module.css";
 
 export default function Login() {
   const [phone, setPhone] = useState("");
@@ -11,7 +10,6 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // چک کردن توکن موجود موقع لود صفحه
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
@@ -32,11 +30,11 @@ export default function Login() {
       });
 
       if (!res.ok) {
-        if (res.status === 401) {
-          setError("شماره تلفن یا رمز عبور اشتباه است");
-        } else {
-          setError("خطا در ورود. لطفاً دوباره تلاش کنید.");
-        }
+        setError(
+          res.status === 401
+            ? "شماره تلفن یا رمز عبور اشتباه است"
+            : "خطا در ورود. لطفاً دوباره تلاش کنید."
+        );
         return;
       }
 
@@ -60,8 +58,10 @@ export default function Login() {
   return (
     <div className={styles.page}>
       <form className={styles.form} onSubmit={handleLogin}>
-        <Logo width={350} height={60} />
-        <div className={styles.inputbox}>
+        <Logo width={280} height={55} />
+        
+        <div className={styles.inputBox}>
+          <FaPhone className={styles.icon} />
           <input
             className={styles.input}
             type="text"
@@ -69,9 +69,10 @@ export default function Login() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
-          <FaPhone className={styles.icon} />
         </div>
-        <div className={styles.inputbox}>
+
+        <div className={styles.inputBox}>
+          <FaLock className={styles.icon} />
           <input
             className={styles.input}
             type="password"
@@ -79,13 +80,14 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <FaLock className={styles.icon} />
         </div>
+
         <button className={styles.button} type="submit">
           ورود
         </button>
+
+        {error && <p className={styles.error}>{error}</p>}
       </form>
-      {error && <p className={styles.error}>{error}</p>}
     </div>
   );
 }

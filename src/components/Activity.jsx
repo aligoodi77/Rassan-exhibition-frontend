@@ -16,6 +16,7 @@ function Activity({ activity, setActivity, error }) {
       >
         <option value="">انتخاب کنید</option>
         {[
+          "مدیریت VIP",
           "نماینده فعلی شرکت",
           "درخواست نمایندگی",
           "پروژه (سازنده)",
@@ -25,7 +26,6 @@ function Activity({ activity, setActivity, error }) {
           "تامین کننده",
           "مصرف کننده",
           "سایر",
-          "مدیریت VIP",
         ].map((item) => (
           <option key={item} value={item}>
             {item}

@@ -372,6 +372,7 @@ export default function Form() {
           fullName={fullName}
           setFullName={setFullName}
           error={errors.fullName}
+          activity={activity}
         />
 
         <Activity
