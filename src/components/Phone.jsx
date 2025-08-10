@@ -15,7 +15,7 @@ function Phone({ phone, setPhone, error }) {
         placeholder="شماره تماس خود را وارد کنید"
       />
       {error && (
-        <small className={`${styles.errorMessage} ${error ? styles.show : ""}`}>
+        <small className={`${styles.errorMessage} ${styles.show}`}>
           {error}
         </small>
       )}

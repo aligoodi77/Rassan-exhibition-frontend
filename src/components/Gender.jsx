@@ -29,7 +29,7 @@ function Gender({ gender, setGender, error }) {
         </label>
       </div>
       {error && (
-        <small className={`${styles.errorMessage} ${error ? styles.show : ""}`}>
+        <small className={`${styles.errorMessage} ${styles.show}`}>
           {error}
         </small>
       )}

@@ -1,6 +1,7 @@
 import Select from "react-select";
 import styles from "./Form.module.css";
 import { FaLocationDot } from "react-icons/fa6";
+
 const provinces = [
   { value: "azarbayjan-sharghi", label: "استان آذربایجان شرقی" },
   { value: "azarbayjan-gharbi", label: "استان آذربایجان غربی" },
@@ -47,27 +48,12 @@ function ProvinceSelect({ province, setProvince, error }) {
         onChange={setProvince}
         placeholder="استان خود را انتخاب کنید..."
         isClearable
+        className={`${styles.select} ${error ? styles.errorSelect : ""}`}
         classNamePrefix="react-select"
         noOptionsMessage={() => "یافت نشد"}
-        className={`${error ? styles.errorSelect : ""}`}
-        styles={{
-          control: (base) => ({
-            ...base,
-            padding: "8px 16px",
-            border: "2px solid rgba(93, 117, 129, 0.2)",
-            borderRadius: "10px",
-            "&:hover": {
-              borderColor: "#5d7581",
-            },
-          }),
-          placeholder: (base) => ({
-            ...base,
-            color: "#adb5bd",
-          }),
-        }}
       />
       {error && (
-        <small className={`${styles.errorMessage} ${error ? styles.show : ""}`}>
+        <small className={`${styles.errorMessage} ${styles.show}`}>
           {error}
         </small>
       )}

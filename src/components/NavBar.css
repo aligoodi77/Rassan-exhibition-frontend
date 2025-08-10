@@ -3,24 +3,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 30px; /* Increased padding */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  font-family: "Vazir", sans-serif;
+  font-family: "IRANSans", sans-serif; /* Changed to IRANSans for consistency */
   direction: rtl;
   transition: all 0.3s ease;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 /* Device heights */
 .navbar-top.mobile {
-  height: 60px;
+  min-height: 64px; /* Slightly taller */
 }
 
 .navbar-top.tablet {
-  height: 70px;
+  min-height: 72px;
 }
 
 .navbar-top.laptop {
-  height: 80px;
+  min-height: 80px;
 }
 
 .navbar-left,
@@ -32,10 +35,10 @@
 .user-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   position: relative;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
   transition: background-color 0.3s ease;
 }
 
@@ -44,18 +47,18 @@
 }
 
 .user-icon {
-  font-size: 18px;
+  font-size: 20px; /* Slightly larger */
   color: #333;
 }
 
 .dropdown-icon {
-  font-size: 16px;
+  font-size: 18px;
   color: #666;
-  margin-right: 5px;
+  margin-right: 8px;
 }
 
 .navbar-user {
-  font-size: 16px;
+  font-size: 1.6rem; /* Using rem for consistency */
   font-weight: 600;
 }
 
@@ -64,12 +67,12 @@
   top: 100%;
   left: 0;
   background: white;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  padding: 10px 0;
+  padding: 12px 0;
   z-index: 1000;
-  min-width: 200px;
-  margin-top: 5px;
+  min-width: 220px; /* Slightly wider */
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
   opacity: 0;
@@ -84,15 +87,15 @@
 }
 
 .dropdown-item {
-  padding: 10px 20px;
+  padding: 12px 24px;
   background: none;
   border: none;
   text-align: right;
-  font-size: 15px;
+  font-size: 1.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
   color: #333;
-  font-family: inherit;
+  font-family: "IRANSans", sans-serif;
 }
 
 .dropdown-item:hover {
@@ -103,8 +106,8 @@
 .dropdown-item.logout {
   color: #e74c3c;
   border-top: 1px solid #eee;
-  margin-top: 5px;
-  padding-top: 15px;
+  margin-top: 8px;
+  padding-top: 16px;
 }
 
 .dropdown-item.logout:hover {
@@ -114,41 +117,52 @@
 /* Responsive */
 @media (max-width: 399px) {
   .navbar-top {
-    padding: 0 10px;
+    padding: 0 15px;
   }
 
   .navbar-user strong {
-    display: none;
+    font-size: 1.4rem; /* Show name but smaller */
   }
 
   .dropdown-menu {
     left: auto;
     right: 0;
+    min-width: 180px;
+    max-width: 90vw; /* Prevent overflow */
   }
 
   .user-info {
-    padding: 6px 8px;
+    padding: 8px 10px;
+  }
+
+  .dropdown-item {
+    font-size: 1.4rem;
+    padding: 10px 20px;
   }
 }
 
 @media (min-width: 400px) and (max-width: 799px) {
   .navbar-user {
-    font-size: 14px;
+    font-size: 1.5rem;
   }
 
   .dropdown-item {
-    font-size: 14px;
-    padding: 8px 16px;
+    font-size: 1.4rem;
+    padding: 10px 20px;
+  }
+
+  .dropdown-menu {
+    min-width: 200px;
   }
 }
 
 @media (min-width: 800px) {
   .dropdown-menu {
-    min-width: 220px;
+    min-width: 240px;
   }
 
   .dropdown-item {
-    font-size: 16px;
-    padding: 12px 20px;
+    font-size: 1.6rem;
+    padding: 14px 24px;
   }
 }

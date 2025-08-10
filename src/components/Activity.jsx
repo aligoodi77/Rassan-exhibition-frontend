@@ -33,7 +33,7 @@ function Activity({ activity, setActivity, error }) {
         ))}
       </select>
       {error && (
-        <small className={`${styles.errorMessage} ${error ? styles.show : ""}`}>
+        <small className={`${styles.errorMessage} ${styles.show}`}>
           {error}
         </small>
       )}

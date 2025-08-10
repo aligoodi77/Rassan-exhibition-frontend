@@ -24,11 +24,11 @@ export default function NavBar({ deviceType }) {
     try {
       const base64Url = token.split(".")[1];
       const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      const payload = JSON.parse(atob(base64));
-      setUserName(payload.name || "کاربر");
+      const payload = JSON.parse(decodeURIComponent(atob(base64))); // اضافه کردن decodeURIComponent
+      setUserName(payload.name ? decodeURIComponent(payload.name) : "کاربر"); // اطمینان از رمزگشایی درست
       setRole(storedRole);
     } catch (err) {
-      console.error("Token decode error:", err);
+      console.error("خطا در رمزگشایی توکن:", err.message);
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       navigate("/login");

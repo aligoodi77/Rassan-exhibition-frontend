@@ -37,7 +37,7 @@ export default function Form() {
     giftChild: "",
     food: "",
   });
-  const [image, setImage] = useState(null); // State for image file
+  const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({});
   const [modal, setModal] = useState({ show: false, title: "", message: "" });
 
@@ -97,11 +97,13 @@ export default function Form() {
       if (!city.trim()) newErrors.city = "لطفاً شهرستان را وارد کنید.";
     }
 
-    if (image && image.size > 10 * 1024 * 1024) {
-      newErrors.image = "حجم تصویر باید کمتر از 10 مگابایت باشد.";
-    }
-    if (image && !["image/jpeg", "image/png"].includes(image.type)) {
-      newErrors.image = "فقط تصاویر JPEG و PNG مجاز هستند.";
+    if (image) {
+      if (image.size > 10 * 1024 * 1024) {
+        newErrors.image = "حجم تصویر باید کمتر از 10 مگابایت باشد.";
+      }
+      if (!["image/jpeg", "image/png"].includes(image.type)) {
+        newErrors.image = "فقط تصاویر JPEG و PNG مجاز هستند.";
+      }
     }
 
     setErrors(newErrors);
@@ -174,6 +176,7 @@ export default function Form() {
       }
 
       const data = await res.json();
+      console.log("Backend response:", data); // دیباگ پاسخ بک‌اند
 
       if (!res.ok) {
         if (res.status === 401) {
@@ -216,6 +219,7 @@ export default function Form() {
         navigate("/requests");
       }
     } catch (error) {
+      console.error("Error in handleSubmit:", error); // دیباگ خطا
       setModal({
         show: true,
         title: "خطا",
@@ -307,7 +311,12 @@ export default function Form() {
           {editData ? "بروزرسانی درخواست" : "ثبت درخواست"}
         </button>
       </form>
-      {modal.show && <Modal {...modal} onClose={closeModal} />}
+      {modal.show && (
+        <>
+          {console.log("Modal state:", modal)} {/* دیباگ وضعیت مودال */}
+          <Modal {...modal} onClose={closeModal} />
+        </>
+      )}
     </div>
   );
 }

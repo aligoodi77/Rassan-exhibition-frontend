@@ -1,14 +1,16 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import styles from "./RequestList.module.css";
 
-// اتصال به WebSocket با پورت درست و جوین به adminRoom
-const socket = io("http://localhost:8800");
-
-function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
+// تنظیمات سوکت با احراز هویت
+const socket = io("http://localhost:8800", {
+  transports: ["websocket"],
+  reconnection: true,
+  auth: {
+    token: localStorage.getItem("token"),
+  },
+});
 
 export default function RequestList() {
   const [forms, setForms] = useState([]);
@@ -18,155 +20,199 @@ export default function RequestList() {
   const [page, setPage] = useState(1);
   const [error, setError] = useState(null);
   const pageSize = 10;
-
+  const isMounted = useRef(true);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    let mounted = true;
+    isMounted.current = true;
 
-    // جوین به adminRoom بعد از اتصال به WebSocket
-    socket.on("connect", () => {
-      console.log("Connected to WebSocket");
-      socket.emit("join", "adminRoom");
-    });
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch("http://localhost:8800/api/forms", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-    socket.on("connect_error", (err) => {
-      console.error("WebSocket connection error:", err);
-      if (mounted) setError("خطا در اتصال به سرور");
-    });
-
-    setLoading(true);
-    fetch("http://localhost:8800/api/forms", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
         if (!res.ok) {
-          if (res.status === 401) {
+          const errorText = await res.text();
+          throw new Error(errorText || "Failed to fetch forms");
+        }
+
+        const data = await res.json();
+        if (isMounted.current) {
+          setForms(
+            data.map((form) => ({
+              ...form,
+              id: Number(form.id),
+              status: form.isConfirmed ? "confirm" : "pending",
+              gifts: form.gifts || {},
+            }))
+          );
+          setError(null);
+        }
+      } catch (err) {
+        if (isMounted.current) {
+          console.error("Fetch error:", err);
+          setError(err.message);
+          if (
+            err.message.includes("401") ||
+            err.message.includes("Unauthorized")
+          ) {
             localStorage.removeItem("token");
             navigate("/login");
-            throw new Error("لطفاً دوباره وارد شوید");
           }
-          throw new Error(`Fetch failed: ${res.status}`);
         }
-        return res.json();
-      })
-      .then((data) => {
-        if (!mounted) return;
-        setForms(
-          Array.isArray(data)
-            ? data.map((form) => ({
-                ...form,
-                status: form.isConfirmed ? "confirm" : "pending",
-              }))
-            : []
+      } finally {
+        if (isMounted.current) setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    // هندلرهای رویدادهای سوکت
+    const handleFormUpdate = (updatedForm) => {
+      if (isMounted.current) {
+        setForms((prev) =>
+          prev.map((f) =>
+            f.id === Number(updatedForm.id)
+              ? {
+                  ...updatedForm,
+                  status: updatedForm.isConfirmed ? "confirm" : "pending",
+                  gifts: updatedForm.gifts || {},
+                }
+              : f
+          )
         );
-        setError(null);
-      })
-      .catch((err) => {
-        if (!mounted) return;
-        console.error("Error fetching forms:", err);
-        setForms([]);
-        setError(err.message || "خطا در دریافت داده‌ها");
-      })
-      .finally(() => mounted && setLoading(false));
+      }
+    };
 
-    socket.on("newForm", (newForm) => {
-      const nf = {
-        ...newForm,
-        gifts: newForm.gifts || {},
-        status: newForm.isConfirmed ? "confirm" : "pending",
-      };
-      setForms((prev) => {
-        if (prev.some((f) => f.id === nf.id)) return prev;
-        return [nf, ...prev];
-      });
+    const handleNewForm = (newForm) => {
+      console.log("📥 Received newForm:", newForm); // اضافه کن
+      if (isMounted.current) {
+        setForms((prev) => [
+          {
+            ...newForm,
+            status: newForm.isConfirmed ? "confirm" : "pending",
+            gifts: newForm.gifts || {},
+          },
+          ...prev.filter((f) => f.id !== newForm.id),
+        ]);
+        console.log("✅ Updated forms state with new form");
+      }
+    };
+
+    const handleDeleteForm = (id) => {
+      if (isMounted.current) {
+        setForms((prev) => prev.filter((f) => f.id !== Number(id)));
+      }
+    };
+
+    const handleSocketError = (err) => {
+      if (isMounted.current) {
+        console.error("Socket error:", err);
+        setError(err.message || "اتصال به سرور با مشکل مواجه شد");
+      }
+    };
+
+    // تنظیم شنونده‌های سوکت
+    socket.on("connect", () => {
+      console.log("Connected to WebSocket");
+      if (token) {
+        socket.emit("join", token);
+      }
     });
 
-    socket.on("deleteForm", (id) => {
-      setForms((prev) => prev.filter((f) => f.id !== id));
-    });
-
-    socket.on("updateForm", (updated) => {
-      setForms((prev) =>
-        prev.map((f) =>
-          f.id === updated.id
-            ? { ...updated, status: updated.isConfirmed ? "confirm" : "pending" }
-            : f
-        )
-      );
-    });
+    socket.on("newForm", handleNewForm);
+    socket.on("updateForm", handleFormUpdate);
+    socket.on("deleteForm", handleDeleteForm);
+    socket.on("error", handleSocketError);
 
     return () => {
-      mounted = false;
-      socket.off("newForm");
-      socket.off("deleteForm");
-      socket.off("updateForm");
-      socket.off("connect");
-      socket.off("connect_error");
+      isMounted.current = false;
+      socket.off("newForm", handleNewForm);
+      socket.off("updateForm", handleFormUpdate);
+      socket.off("deleteForm", handleDeleteForm);
+      socket.off("error", handleSocketError);
     };
   }, [token, navigate]);
 
   const computeGiftCounts = (form) => {
     const gifts = form.gifts || {};
     const counts = {};
-    Object.keys(gifts).forEach((key) => {
-      counts[key] = parseInt(gifts[key]) || 0;
+
+    Object.entries(gifts).forEach(([key, value]) => {
+      const num = Number(value);
+      if (!isNaN(num) && num > 0) {
+        counts[key] = num;
+      }
     });
-    const total = Object.values(counts).reduce((sum, val) => sum + val, 0);
-    return { ...counts, total };
+
+    return counts;
   };
 
   const renderGiftCounts = (form) => {
-    const c = computeGiftCounts(form);
+    const counts = computeGiftCounts(form);
+
+    if (Object.keys(counts).length === 0) {
+      return <span className={styles.noGifts}>-</span>;
+    }
+
     return (
       <div className={styles.giftCountsHorizontal}>
-        {Object.keys(c).map((key) => {
-          if (key === "total" || c[key] === 0) return null;
-          return (
-            <div
-              key={key}
-              className={`${styles.giftBox} ${
-                styles[`gift${key}`] || styles.giftDefault
-              }`}
-              title={`${key}: ${c[key]}`}
-            >
-              {c[key]}
-            </div>
-          );
-        })}
+        {Object.entries(counts).map(([key, value]) => (
+          <div
+            key={key}
+            className={`${styles.giftBox} ${
+              styles[`gift${key.charAt(0).toUpperCase() + key.slice(1)}`] ||
+              styles.giftDefault
+            }`}
+            title={`${key}: ${value}`}
+          >
+            {value}
+          </div>
+        ))}
       </div>
     );
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("آیا مطمئن هستید؟")) return;
+    if (!window.confirm("آیا مطمئن هستید که می‌خواهید این فرم را حذف کنید؟")) {
+      return;
+    }
+
     try {
       const res = await fetch(`http://localhost:8800/api/forms/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.ok) {
-        setForms((prev) => prev.filter((f) => f.id !== id));
-        setError(null);
-      } else {
-        if (res.status === 401) {
-          localStorage.removeItem("token");
-          navigate("/login");
-          setError("لطفاً دوباره وارد شوید");
-        } else {
-          setError("حذف ناموفق بود");
-        }
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "حذف ناموفق بود");
       }
+
+      setError(null);
     } catch (err) {
-      console.error("Error deleting form:", err);
-      setError("خطای شبکه");
+      console.error("Delete error:", err);
+      setError(err.message);
+
+      if (err.message.includes("Unauthorized")) {
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
     }
   };
 
   const handleEdit = (form) => {
-    const updatedForm = { ...form, lastUpdated: new Date().toISOString() };
-    navigate("/form", { state: { editData: updatedForm } });
+    navigate("/form", {
+      state: {
+        editData: {
+          ...form,
+          lastUpdated: new Date().toISOString(),
+        },
+      },
+    });
   };
 
   const handleConfirm = async (id) => {
@@ -179,115 +225,98 @@ export default function RequestList() {
         },
         body: JSON.stringify({ isConfirmed: true }),
       });
-      if (res.ok) {
-        const updated = await res.json();
-        setForms((prev) =>
-          prev.map((f) =>
-            f.id === id
-              ? { ...updated, status: updated.isConfirmed ? "confirm" : "pending" }
-              : f
-          )
-        );
-        setError(null);
-      } else {
-        if (res.status === 401) {
-          localStorage.removeItem("token");
-          navigate("/login");
-          setError("لطفاً دوباره وارد شوید");
-        } else {
-          setError("تأیید ناموفق بود");
-        }
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "تأیید ناموفق بود");
       }
+
+      setError(null);
     } catch (err) {
-      console.error("Error confirming form:", err);
-      setError("خطای شبکه");
-    }
-  };
+      console.error("Confirm error:", err);
+      setError(err.message);
 
-  const highlightMatches = (text = "", q = "") => {
-    if (!q) return text;
-    try {
-      const escaped = escapeRegExp(q);
-      const regex = new RegExp(escaped, "gi");
-      const parts = [];
-      let lastIndex = 0;
-      let match;
-      while ((match = regex.exec(text)) !== null) {
-        const idx = match.index;
-        if (idx > lastIndex) parts.push(text.slice(lastIndex, idx));
-        parts.push(
-          <span key={idx + Math.random()} className={styles.highlight}>
-            {text.slice(idx, idx + match[0].length)}
-          </span>
-        );
-        lastIndex = idx + match[0].length;
+      if (err.message.includes("Unauthorized")) {
+        localStorage.removeItem("token");
+        navigate("/login");
       }
-      if (lastIndex < text.length) parts.push(text.slice(lastIndex));
-      return parts;
-    } catch {
-      return text;
     }
   };
 
+  // فیلتر و صفحه‌بندی
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return forms
-      .filter((f) => {
-        if (filterStatus !== "all" && (f.status || "") !== filterStatus)
-          return false;
-        if (!q) return true;
-        const fields = [
-          f.fullName || "",
-          f.phone || "",
-          f.activity || "",
-          (f.createdBy && f.createdBy.name) || "",
-        ]
-          .join(" ")
-          .toLowerCase();
-        return fields.includes(q);
+      .filter((form) => {
+        const statusMatch =
+          filterStatus === "all" || form.status === filterStatus;
+        const searchMatch =
+          !q ||
+          String(form.id).includes(q) ||
+          form.fullName?.toLowerCase().includes(q);
+
+        return statusMatch && searchMatch;
       })
-      .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [forms, search, filterStatus]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const pageItems = useMemo(() => {
+    return filtered.slice((page - 1) * pageSize, page * pageSize);
+  }, [filtered, page, pageSize]);
+
   useEffect(() => {
-    if (page > totalPages) setPage(totalPages);
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
   }, [totalPages, page]);
 
-  useEffect(() => setPage(1), [search, filterStatus]);
-
-  const pageItems = filtered.slice((page - 1) * pageSize, page * pageSize);
+  useEffect(() => {
+    setPage(1);
+  }, [search, filterStatus]);
 
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>لیست درخواست‌ها</h2>
-      {error && <div className={styles.error}>{error}</div>}
+
+      {error && (
+        <div className={styles.error}>
+          {error}
+          <button onClick={() => setError(null)} className={styles.closeError}>
+            ×
+          </button>
+        </div>
+      )}
+
       <div className={styles.controls}>
         <input
-          aria-label="search"
+          type="text"
+          aria-label="جستجو بر اساس شماره فرم یا نام"
           className={styles.search}
-          placeholder="جستجو بر اساس نام، تلفن، فعالیت..."
+          placeholder="جستجو بر اساس شماره فرم یا نام..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+
         <div className={styles.filterRow}>
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
             className={styles.select}
+            aria-label="فیلتر بر اساس وضعیت"
           >
             <option value="all">همه وضعیت‌ها</option>
             <option value="confirm">تأیید شده</option>
             <option value="pending">در انتظار</option>
-            {/* گزینه rejected حذف شده چون بک‌اند پشتیبانی نمی‌کنه */}
           </select>
         </div>
       </div>
+
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>#</th>
+              <th>شماره</th>
               <th>نام و نام خانوادگی</th>
               <th>فعالیت</th>
               <th>کارشناس</th>
@@ -296,49 +325,54 @@ export default function RequestList() {
               <th style={{ textAlign: "right" }}>عملیات</th>
             </tr>
           </thead>
+
           <tbody>
             {loading ? (
               <tr>
                 <td colSpan={7} className={styles.center}>
-                  در حال بارگذاری...
+                  <div className={styles.loading}>در حال بارگذاری...</div>
                 </td>
               </tr>
-            ) : pageItems.length ? (
+            ) : pageItems.length === 0 ? (
+              <tr>
+                <td colSpan={7} className={styles.center}>
+                  موردی یافت نشد
+                </td>
+              </tr>
+            ) : (
               pageItems.map((form) => (
                 <tr key={form.id} className={styles.row}>
-                  <td className={styles.idCell}>
-                    <span className={styles.idPrefix}>
-                      {String(form.id || "").slice(0, 2)}
-                    </span>
-                  </td>
-                  <td className={styles.nameCell}>
-                    {highlightMatches(form.fullName || "", search)}
-                  </td>
+                  <td className={styles.idCell}>{form.id}</td>
+                  <td className={styles.nameCell}>{form.fullName || "-"}</td>
                   <td>{form.activity || "-"}</td>
                   <td>{form.createdBy?.name || "نامشخص"}</td>
                   <td className={styles.giftCell}>{renderGiftCounts(form)}</td>
                   <td>
-                    {form.status === "confirm" ? (
-                      <span className={styles.statusConfirmedBadge}>
-                        ✓ تأیید شده
-                      </span>
-                    ) : (
-                      <span className={styles.statusUnconfirmedBadge}>
-                        ✖ در انتظار
-                      </span>
-                    )}
+                    <span
+                      className={
+                        form.status === "confirm"
+                          ? styles.statusConfirmedBadge
+                          : styles.statusUnconfirmedBadge
+                      }
+                    >
+                      {form.status === "confirm"
+                        ? "✓ تأیید شده"
+                        : "✖ در انتظار"}
+                    </span>
                   </td>
                   <td className={styles.actionsCell}>
                     <div className={styles.actions}>
                       <button
                         className={styles.btnEdit}
                         onClick={() => handleEdit(form)}
+                        aria-label={`ویرایش فرم ${form.id}`}
                       >
                         ویرایش
                       </button>
                       <button
                         className={styles.btnDelete}
                         onClick={() => handleDelete(form.id)}
+                        aria-label={`حذف فرم ${form.id}`}
                       >
                         حذف
                       </button>
@@ -346,6 +380,7 @@ export default function RequestList() {
                         <button
                           className={styles.btnConfirm}
                           onClick={() => handleConfirm(form.id)}
+                          aria-label={`تأیید فرم ${form.id}`}
                         >
                           تأیید
                         </button>
@@ -354,37 +389,38 @@ export default function RequestList() {
                   </td>
                 </tr>
               ))
-            ) : (
-              <tr>
-                <td colSpan={7} className={styles.center}>
-                  موردی یافت نشد
-                </td>
-              </tr>
             )}
           </tbody>
         </table>
       </div>
-      <div className={styles.pager}>
-        <div className={styles.pageInfo}>
-          صفحه {page} از {totalPages} • {filtered.length} نتیجه
+
+      {filtered.length > 0 && (
+        <div className={styles.pager}>
+          <div className={styles.pageInfo}>
+            صفحه {page} از {totalPages} • {filtered.length} نتیجه
+          </div>
+
+          <div className={styles.pageButtons}>
+            <button
+              className={styles.pageBtn}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              aria-label="صفحه قبلی"
+            >
+              قبلی
+            </button>
+
+            <button
+              className={styles.pageBtn}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              aria-label="صفحه بعدی"
+            >
+              بعدی
+            </button>
+          </div>
         </div>
-        <div className={styles.pageButtons}>
-          <button
-            className={styles.pageBtn}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-          >
-            قبلی
-          </button>
-          <button
-            className={styles.pageBtn}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page === totalPages}
-          >
-            بعدی
-          </button>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

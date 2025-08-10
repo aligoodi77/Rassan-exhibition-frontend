@@ -14,7 +14,7 @@ function City({ city, setCity, error }) {
         onChange={(e) => setCity(e.target.value)}
       />
       {error && (
-        <small className={`${styles.errorMessage} ${error ? styles.show : ""}`}>
+        <small className={`${styles.errorMessage} ${styles.show}`}>
           {error}
         </small>
       )}

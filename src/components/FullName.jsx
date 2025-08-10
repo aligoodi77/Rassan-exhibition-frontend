@@ -16,7 +16,7 @@ function FullName({ fullName, setFullName, error }) {
         placeholder="نام کامل خود را وارد کنید"
       />
       {error && (
-        <small className={`${styles.errorMessage} ${error ? styles.show : ""}`}>
+        <small className={`${styles.errorMessage} ${styles.show}`}>
           {error}
         </small>
       )}
