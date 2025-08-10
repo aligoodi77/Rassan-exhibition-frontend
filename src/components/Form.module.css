@@ -482,3 +482,35 @@
     gap: 28px;
   }
 }
+
+.imagePreview {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.imagePreview img {
+  max-width: 120px;
+  max-height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e6edf0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+.previewActions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.clearBtn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.clearBtn:hover {
+  opacity: 0.95;
+}

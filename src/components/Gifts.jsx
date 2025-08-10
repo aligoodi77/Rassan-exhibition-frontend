@@ -17,7 +17,7 @@ function Gifts({ gifts, setGifts, giftVIP }) {
               className={`${styles.input} ${
                 item.disabled ? styles.disabled : ""
               }`}
-              type="number"
+              type="text"
               placeholder={item.label}
               disabled={item.disabled}
               value={gifts[item.key]}
