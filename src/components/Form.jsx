@@ -151,7 +151,7 @@ export default function Form() {
     formData.append("needs", JSON.stringify(needs));
     formData.append("gifts", JSON.stringify(gifts));
     if (image) formData.append("image", image);
-    if (editData) formData.append("isConfirmed", false);
+    if (editData) formData.append("isConfirmed", "false");
 
     const token = localStorage.getItem("token");
 
