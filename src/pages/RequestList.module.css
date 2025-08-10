@@ -7,7 +7,7 @@
   margin: 20px auto;
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  font-family: 'IRANSans', sans-serif;
+  font-family: "IRANSans", sans-serif;
   color: #2f4858;
 }
 
@@ -314,5 +314,64 @@
   .pager {
     flex-direction: column;
     align-items: center;
+  }
+}
+
+/* compact gift badge used in RequestList */
+.giftBadge {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  margin: 2px;
+}
+
+/* small icon inside badge */
+.giftIconSmall {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* number label */
+.giftLabelSmall {
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* a11y: ensure badges have enough contrast */
+.giftBadge:focus {
+  outline: 3px solid rgba(99, 102, 241, 0.18);
+  outline-offset: 2px;
+}
+
+/* responsive adjustments */
+@media (max-width: 768px) {
+  .giftBox {
+    min-width: 20px;
+    height: 20px;
+    padding: 4px 6px;
+    font-size: 0.78rem;
+    border-radius: 8px;
+  }
+  .giftIconSmall {
+    width: 16px;
+    height: 16px;
+    font-size: 12px;
+  }
+  .giftLabelSmall {
+    min-width: 18px;
+    font-size: 0.78rem;
   }
 }

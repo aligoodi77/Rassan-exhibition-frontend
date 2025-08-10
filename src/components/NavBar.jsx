@@ -100,7 +100,7 @@ export default function NavBar({ deviceType }) {
                 لیست درخواست‌ها
               </button>
             )}
-            {["admin", "formOnly", "gift"].includes(role) && (
+            {["admin", "expert", "promoter"].includes(role) && (
               <button
                 className="dropdown-item"
                 onClick={() => navigate("/form")}

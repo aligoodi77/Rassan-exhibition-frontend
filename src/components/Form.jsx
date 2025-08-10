@@ -482,7 +482,7 @@ export default function Form() {
           </>
         )}
 
-        {["admin", "formOnly", "gift"].includes(role) && (
+        {["admin", "expert", "promoter"].includes(role) && (
           <>
             <label className={styles.titleLabel}>
               <FaGift />

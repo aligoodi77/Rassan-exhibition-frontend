@@ -15,7 +15,7 @@ export default function Login() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
-    if (token && ["admin", "formOnly", "gift"].includes(role)) {
+    if (token && ["admin", "expert", "promoter"].includes(role)) {
       navigate("/form");
     }
   }, [navigate]);
@@ -44,7 +44,7 @@ export default function Login() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
 
-      if (["admin", "formOnly", "gift"].includes(data.role)) {
+      if (["admin", "expert", "promoter"].includes(data.role)) {
         navigate("/form");
       } else {
         setError("نقش کاربر مجاز نیست");

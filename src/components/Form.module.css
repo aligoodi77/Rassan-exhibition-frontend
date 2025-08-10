@@ -514,3 +514,173 @@
 .clearBtn:hover {
   opacity: 0.95;
 }
+
+/* Gifts layout */
+.giftsWrap {
+  margin-top: 8px;
+}
+
+/* grid responsive */
+.giftsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+/* card */
+.giftCard {
+  background: #fff;
+  border: 1px solid #e6edf0;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 84px;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.04);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.giftCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
+}
+
+.giftTop {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  direction: rtl;
+}
+.giftIcon {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #eef2ff, #e6f0ff);
+  color: #2b2b7a;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.giftLabel {
+  font-weight: 700;
+  font-size: 14px;
+  color: #0f172a;
+  text-align: right;
+}
+.giftFullLabel {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+  text-align: right;
+}
+
+/* control row */
+.giftControl {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  direction: rtl;
+}
+.stepBtn {
+  border: none;
+  background: #f1f5f9;
+  color: #0f172a;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.stepBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.numberInput {
+  width: 64px;
+  text-align: center;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #e6edf0;
+  font-weight: 700;
+  font-size: 14px;
+  background: white;
+}
+
+/* A+ special */
+.giftAplusCard .giftIcon {
+  background: linear-gradient(90deg, #ffe29f, #ffb86b);
+  color: #6a4100;
+}
+.giftAplusCard {
+  border: 1px solid rgba(255, 160, 0, 0.14);
+}
+
+/* disabled */
+.giftDisabled {
+  opacity: 0.55;
+  filter: grayscale(0.02);
+}
+
+/* hint */
+.giftHint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* footer */
+.giftsFooter {
+  margin-top: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #374151;
+  font-weight: 600;
+}
+.helperText small {
+  color: #6b7280;
+}
+
+/* mobile */
+@media (max-width: 880px) {
+  .giftsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .numberInput {
+    width: 56px;
+  }
+}
+@media (max-width: 480px) {
+  .giftsGrid {
+    grid-template-columns: 1fr;
+  }
+  .giftTop {
+    gap: 8px;
+  }
+  .giftIcon {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
+  .numberInput {
+    width: 48px;
+    font-size: 13px;
+  }
+  .stepBtn {
+    padding: 6px;
+  }
+}

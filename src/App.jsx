@@ -141,7 +141,7 @@ export default function App() {
           <Route
             path="/form"
             element={
-              <PrivateRoute roles={["formOnly", "admin", "gift"]}>
+              <PrivateRoute roles={["expert", "admin", "promoter"]}>
                 <Form />
               </PrivateRoute>
             }

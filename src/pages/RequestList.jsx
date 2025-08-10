@@ -2,6 +2,14 @@ import React, { useEffect, useMemo, useState, useRef } from "react";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import styles from "./RequestList.module.css";
+import {
+  FaStar,
+  FaGift,
+  FaBoxOpen,
+  FaConciergeBell,
+  FaChild,
+  FaUtensils,
+} from "react-icons/fa";
 
 // تنظیمات سوکت با احراز هویت
 const socket = io("http://localhost:8800", {
@@ -11,6 +19,46 @@ const socket = io("http://localhost:8800", {
     token: localStorage.getItem("token"),
   },
 });
+
+// تعاریف گیفت برای نمایش (label, icon, توضیح)
+const GIFT_DEFS = {
+  giftAPlus: {
+    short: "A+",
+    full: "گیفت ممتاز (A+)",
+    icon: <FaStar />,
+    classSuffix: "GiftAPlus",
+  },
+  giftA: {
+    short: "A",
+    full: "گیفت A",
+    icon: <FaGift />,
+    classSuffix: "GiftA",
+  },
+  giftB: {
+    short: "B",
+    full: "گیفت B",
+    icon: <FaBoxOpen />,
+    classSuffix: "GiftB",
+  },
+  giftService: {
+    short: "سرویس",
+    full: "خدمت / سرویس",
+    icon: <FaConciergeBell />,
+    classSuffix: "GiftService",
+  },
+  giftChild: {
+    short: "کودک",
+    full: "بسته کودک",
+    icon: <FaChild />,
+    classSuffix: "GiftChild",
+  },
+  food: {
+    short: "غذا",
+    full: "غذا",
+    icon: <FaUtensils />,
+    classSuffix: "Food",
+  },
+};
 
 export default function RequestList() {
   const [forms, setForms] = useState([]);
@@ -70,7 +118,7 @@ export default function RequestList() {
 
     fetchData();
 
-    // هندلرهای رویدادهای سوکت
+    // سوکت هندلرها...
     const handleFormUpdate = (updatedForm) => {
       if (isMounted.current) {
         setForms((prev) =>
@@ -88,7 +136,7 @@ export default function RequestList() {
     };
 
     const handleNewForm = (newForm) => {
-      console.log("📥 Received newForm:", newForm); // اضافه کن
+      console.log("📥 Received newForm:", newForm);
       if (isMounted.current) {
         setForms((prev) => [
           {
@@ -115,7 +163,6 @@ export default function RequestList() {
       }
     };
 
-    // تنظیم شنونده‌های سوکت
     socket.on("connect", () => {
       console.log("Connected to WebSocket");
       if (token) {
@@ -151,6 +198,7 @@ export default function RequestList() {
     return counts;
   };
 
+  // جدید: نمایش زیباتر گیفت‌ها با آیکون و رنگ
   const renderGiftCounts = (form) => {
     const counts = computeGiftCounts(form);
 
@@ -160,22 +208,42 @@ export default function RequestList() {
 
     return (
       <div className={styles.giftCountsHorizontal}>
-        {Object.entries(counts).map(([key, value]) => (
-          <div
-            key={key}
-            className={`${styles.giftBox} ${
-              styles[`gift${key.charAt(0).toUpperCase() + key.slice(1)}`] ||
-              styles.giftDefault
-            }`}
-            title={`${key}: ${value}`}
-          >
-            {value}
-          </div>
-        ))}
+        {Object.entries(counts).map(([key, value]) => {
+          const def = GIFT_DEFS[key] || {
+            short: key,
+            full: key,
+            icon: <FaGift />,
+            classSuffix: key,
+          };
+
+          // نام کلاس مثل: giftGiftAPlus یا giftGiftA
+          const classNameFromCss =
+            styles[
+              `gift${
+                def.classSuffix.charAt(0).toUpperCase() +
+                def.classSuffix.slice(1)
+              }`
+            ] || styles.giftDefault;
+
+          return (
+            <div
+              key={key}
+              className={`${styles.giftBox} ${styles.giftBadge} ${classNameFromCss}`}
+              title={`${def.full}: ${value}`}
+              aria-label={`${def.full} تعداد ${value}`}
+            >
+              <span className={styles.giftIconSmall} aria-hidden>
+                {def.icon}
+              </span>
+              <span className={styles.giftLabelSmall}>{value}</span>
+            </div>
+          );
+        })}
       </div>
     );
   };
 
+  // بقیهٔ فانکشن‌ها (handleDelete, handleEdit, handleConfirm, فیلتر و غیره) بدون تغییر
   const handleDelete = async (id) => {
     if (!window.confirm("آیا مطمئن هستید که می‌خواهید این فرم را حذف کنید؟")) {
       return;
