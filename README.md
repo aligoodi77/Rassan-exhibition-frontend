@@ -1,12 +1,46 @@
-# React + Vite
+# 🧋 Dairy Expo 2025 - Guest Registration & Gift Delivery System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project was developed for **Shir Alat Rassan Company** for the **International Dairy Expo 2025**.  
+It provides a modern, real-time system to register guests and manage gift deliveries efficiently using **WebSockets (Socket.io)**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- 🧾 Guest registration form with full details (name, company, phone, etc.)
+- 🎁 Gift delivery tracking and confirmation
+- 🔄 Real-time updates powered by **Socket.io**
+- 🖥️ Responsive, user-friendly UI built with **React + Bootstrap**
+- 🌐 Smooth page transitions using **React Router**
+- 🔍 Dynamic dropdowns and filters with **React Select**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠️ Tech Stack
+
+| Technology          | Purpose                         |
+| ------------------- | ------------------------------- |
+| **React 19**        | UI framework                    |
+| **Vite**            | Build tool & development server |
+| **Socket.io**       | Real-time communication         |
+| **Bootstrap 5**     | UI styling & layout             |
+| **React Router v7** | Client-side routing             |
+| **React Select**    | Custom dropdown components      |
+| **IranSans Font**   | Persian typography              |
+
+---
+
+## ⚙️ Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/dairy-expo-2025.git
+cd dairy-expo-2025
+
+# Install dependencies
+npm install
+
+# Run the development server
+npm run dev
+```
+# Rassan-exhibition-frontend
