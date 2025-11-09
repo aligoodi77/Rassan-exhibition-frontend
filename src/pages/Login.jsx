@@ -18,40 +18,17 @@ export default function Login() {
     }
   }, [navigate]);
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setError("");
 
-    try {
-      const res = await fetch("http://localhost:8800/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, password }),
-      });
-
-      if (!res.ok) {
-        setError(
-          res.status === 401
-            ? "شماره تلفن یا رمز عبور اشتباه است"
-            : "خطا در ورود. لطفاً دوباره تلاش کنید."
-        );
-        return;
-      }
-
-      const data = await res.json();
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
-
-      if (["admin", "expert", "promoter"].includes(data.role)) {
-        navigate("/form");
-      } else {
-        setError("نقش کاربر مجاز نیست");
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-      }
-    } catch (err) {
-      console.error("Error in login:", err);
-      setError("خطا در ارتباط با سرور. لطفاً بعداً تلاش کنید.");
+    // fake login frontend-only
+    if (phone === "09123456789" && password === "1234") {
+      localStorage.setItem("token", "fakeToken");
+      localStorage.setItem("role", "admin");
+      navigate("/form");
+    } else {
+      setError("شماره تلفن یا رمز عبور اشتباه است");
     }
   };
 
@@ -59,7 +36,7 @@ export default function Login() {
     <div className={styles.page}>
       <form className={styles.form} onSubmit={handleLogin}>
         <Logo width={280} height={55} />
-        
+
         <div className={styles.inputBox}>
           <FaPhone className={styles.icon} />
           <input

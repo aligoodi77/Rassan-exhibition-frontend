@@ -13,20 +13,18 @@ import Form from "./components/Form";
 import Login from "./pages/Login";
 import "typeface-iransans";
 
+// PrivateRoute baraye fake login
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
   if (!token) return <Navigate to="/login" replace />;
 
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    if (roles && !roles.includes(payload.role)) {
-      return <Navigate to="/login" replace />;
-    }
-    return children;
-  } catch {
-    localStorage.removeItem("token");
+  if (roles && !roles.includes(role)) {
     return <Navigate to="/login" replace />;
   }
+
+  return children;
 }
 
 function Layout({ children }) {
