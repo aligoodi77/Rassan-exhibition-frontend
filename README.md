@@ -1,46 +1,83 @@
-# 🧋 Dairy Expo 2025 - Guest Registration & Gift Delivery System
+# Dairy Expo 2025 – Guest Registration & Gift Delivery System
 
-This project was developed for **Shir Alat Rassan Company** for the **International Dairy Expo 2025**.  
-It provides a modern, real-time system to register guests and manage gift deliveries efficiently using **WebSockets (Socket.io)**.
+This repository hosts the frontend for a real ar‑time guest registration and gift delivery management system developed for Shir Alat Rassan Company at the International Dairy Expo 2025. Built with **React** and **Vite**, the app enables staff to register guests, track gifts, and instantly propagate updates across all connected devices via **Socket.io**.
 
----
+## Key Features
 
-## 🚀 Features
+- **Comprehensive guest registration** – Capture the guest’s name, company, phone, and other details via an intuitive form.
+- **Gift management** – Record, update, and confirm gift deliveries for each attendee.
+- **Real‑time updates** – All registrations and gift changes are pushed to every connected client using WebSockets (Socket.io), ensuring a single source of truth.
+- **Responsive & accessible UI** – Constructed with React 19 and Bootstrap 5 for a polished look on desktop and mobile.
+- **Smooth client‑side routing** – Powered by React Router v7 for lightning‑fast page transitions.
+- **Dynamic search & filters** – Use React Select components for dropdowns and filtering lists.
+- **Persian typography support** – The IranSans font delivers crisp Persian text rendering.
 
-- 🧾 Guest registration form with full details (name, company, phone, etc.)
-- 🎁 Gift delivery tracking and confirmation
-- 🔄 Real-time updates powered by **Socket.io**
-- 🖥️ Responsive, user-friendly UI built with **React + Bootstrap**
-- 🌐 Smooth page transitions using **React Router**
-- 🔍 Dynamic dropdowns and filters with **React Select**
+## Technology Stack
 
----
+| Technology        | Purpose                          |
+|-------------------|----------------------------------|
+| **React 19**      | UI framework                     |
+| **Vite**          | Build tool & development server  |
+| **Socket.io**     | Real‑time WebSocket communication|
+| **Bootstrap 5**   | Styling & layout                 |
+| **React Router v7** | Client‑side routing             |
+| **React Select**  | Custom dropdowns & filters       |
+| **IranSans**      | Persian font family              |
 
-## 🛠️ Tech Stack
+## Getting Started
 
-| Technology          | Purpose                         |
-| ------------------- | ------------------------------- |
-| **React 19**        | UI framework                    |
-| **Vite**            | Build tool & development server |
-| **Socket.io**       | Real-time communication         |
-| **Bootstrap 5**     | UI styling & layout             |
-| **React Router v7** | Client-side routing             |
-| **React Select**    | Custom dropdown components      |
-| **IranSans Font**   | Persian typography              |
+Follow these steps to run the project locally:
 
----
+1. **Clone the repository**
 
-## ⚙️ Installation
+   ```bash
+   git clone https://github.com/aligoodi77/Rassan-exhibition-frontend.git
+   cd Rassan-exhibition-frontend
+   ```
 
-```bash
-# Clone the repository
-git clone https://github.com/your-username/dairy-expo-2025.git
-cd dairy-expo-2025
+2. **Install dependencies**
 
-# Install dependencies
-npm install
+   ```bash
+   npm install
+   ```
 
-# Run the development server
-npm run dev
+3. **Run the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+   Vite will start a dev server (by default on `http://localhost:5173`) with hot reload enabled.
+
+4. **Build for production**
+
+   ```bash
+   npm run build
+   ```
+
+   The compiled output will be generated in the `dist` folder.
+
+## Project Structure
+
 ```
-# Rassan-exhibition-frontend
+├── public/               # Static assets (favicon, icons, images)
+├── src/
+│   ├── components/       # Shared reusable components
+│   ├── pages/            # Page components and routing
+│   ├── services/         # API and WebSocket helpers
+│   ├── styles/           # SCSS/CSS files
+│   └── main.jsx          # Application entry point
+├── index.html            # Base HTML template
+├── package.json          # Project metadata & scripts
+└── vite.config.js        # Vite configuration
+```
+
+This overview may differ slightly, but the structure illustrates how concerns are separated into reusable parts.
+
+## Contributing
+
+Contributions are welcome! If you have suggestions for improvements or new features, please open an issue or create a pull request.
+
+## License
+
+This project is released under the [MIT License](LICENSE). You are free to use, modify, and distribute it for personal and commercial purposes.
